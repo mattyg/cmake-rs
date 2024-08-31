@@ -638,7 +638,17 @@ impl Config {
                 cmd.arg("-G").arg(self.visual_studio_generator(&target));
                 false
             };
-            if !is_ninja && !using_nmake_generator {
+            let using_mingw_generator = if let Some(g) = &generator {
+                g == "MinGW Makefiles"
+            } else {
+                false
+            };
+            let using_unix_generator = if let Some(g) = &generator {
+                g == "Unix Makefiles"
+            } else {
+                false
+            };
+            if !is_ninja && !using_nmake_generator && !using_mingw_generator && !using_unix_generator {
                 if target.contains("x86_64") {
                     if self.generator_toolset.is_none() {
                         cmd.arg("-Thost=x64");
